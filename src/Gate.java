@@ -9,6 +9,9 @@ public class Gate {
 	public void enter(Ticket ticket) {
 		if (ticket.isValid() && ticket.getOrigin() == null) {
 			//not completed
+			if (ticket instanceof OneWayTicket) {
+				ticket.setOrigin(this);
+			}
 			open();
 		} else {
 			close();
@@ -21,15 +24,18 @@ public class Gate {
 			int d = Math.abs(origin.distance - distance);
 			int fare = Line.getFare(d);
 			// not completed
-			if (true) {
+			if (ticket instanceof PrepaidCard) {
 				ticket.adjustValue(fare);
 				ticket.setOrigin(null);
-				open();
+				close();
 				return;
+			} else if (ticket instanceof OneWayTicket) {
+				ticket.setOrigin(null);
 			}
 		}
 		close();
 	}
+
 	private void open() {
 		System.out.println(name + ": open");
 	}
